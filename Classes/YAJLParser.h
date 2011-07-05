@@ -58,8 +58,7 @@ typedef NSUInteger YAJLParserOptions; //! Parser options
 enum {
   YAJLParserStatusNone = 0,  //!< No status
   YAJLParserStatusOK = 1, //!< Parsed OK 
-  YAJLParserStatusInsufficientData = 2, //!< There was insufficient data
-  YAJLParserStatusError = 3 //!< Parser errored
+  YAJLParserStatusError = 2 //!< Parser errored
 };
 typedef NSUInteger YAJLParserStatus; //!< Status of the last parse event
 
@@ -164,18 +163,24 @@ typedef NSUInteger YAJLParserStatus; //!< Status of the last parse event
 - (id)initWithParserOptions:(YAJLParserOptions)parserOptions;
 
 /*!
- Parse data.
- 
- If streaming, you can call parse multiple times as long as 
- previous calls return YAJLParserStatusInsufficientData.
- 
+ Parse data in one chunk.
  @param data
  @result Parser status
   - YAJLParserStatusNone: No status
   - YAJLParserStatusOK: Parsed OK 
-  - YAJLParserStatusInsufficientData: There was insufficient data
   - YAJLParserStatusError: Parser errored
  */
 - (YAJLParserStatus)parse:(NSData *)data;
+
+/*!
+ Parse data in multiple chunks.
+ @param data
+ @param complete Data is last chunk
+ @result Parser status
+ - YAJLParserStatusNone: No status
+ - YAJLParserStatusOK: Parsed OK 
+ - YAJLParserStatusError: Parser errored
+ */
+- (YAJLParserStatus)parse:(NSData *)data complete:(BOOL)complete;
 
 @end

@@ -35,7 +35,7 @@
 - (void)_popKey;
 @end
 
-NSInteger YAJLDocumentStackCapacity = 20;
+NSUInteger YAJLDocumentStackCapacity = 20;
 
 @implementation YAJLDocument
 
@@ -49,7 +49,7 @@ NSInteger YAJLDocumentStackCapacity = 20;
   return [self initWithParserOptions:parserOptions capacity:YAJLDocumentStackCapacity];
 }
 
-- (id)initWithParserOptions:(YAJLParserOptions)parserOptions capacity:(NSInteger)capacity {
+- (id)initWithParserOptions:(YAJLParserOptions)parserOptions capacity:(NSUInteger)capacity {
   if ((self = [super init])) {
     stack_ = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];
     keyStack_ = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];    
@@ -64,7 +64,7 @@ NSInteger YAJLDocumentStackCapacity = 20;
   return [self initWithData:data parserOptions:parserOptions capacity:YAJLDocumentStackCapacity error:error];
 }
 
-- (id)initWithData:(NSData *)data parserOptions:(YAJLParserOptions)parserOptions capacity:(NSInteger)capacity error:(NSError **)error {
+- (id)initWithData:(NSData *)data parserOptions:(YAJLParserOptions)parserOptions capacity:(NSUInteger)capacity error:(NSError **)error {
   if ((self = [self initWithParserOptions:parserOptions capacity:capacity])) {    
     [self parse:data error:error];
   }
@@ -86,6 +86,12 @@ NSInteger YAJLDocumentStackCapacity = 20;
   return parserStatus_;
 }
 
+- (YAJLParserStatus)parse:(NSData *)data complete:(BOOL)complete error:(NSError **)error {
+  parserStatus_ = [parser_ parse:data complete:complete];
+  if (error) *error = [parser_ parserError];
+  return parserStatus_;
+}
+
 #pragma mark Delegates
 
 - (void)parser:(YAJLParser *)parser didAdd:(id)value {
@@ -101,6 +107,8 @@ NSInteger YAJLDocumentStackCapacity = 20;
       if ([delegate_ respondsToSelector:@selector(document:didSetObject:forKey:inDictionary:)])
         [delegate_ document:self didSetObject:value forKey:key_ inDictionary:dict_];
       [self _popKey];
+      break;
+    default:
       break;
   } 
 }

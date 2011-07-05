@@ -36,7 +36,7 @@ typedef enum {
   YAJLDecoderCurrentTypeDict
 } YAJLDecoderCurrentType;
 
-extern NSInteger YAJLDocumentStackCapacity;
+extern NSUInteger YAJLDocumentStackCapacity;
 
 @class YAJLDocument;
 
@@ -158,7 +158,7 @@ extern NSInteger YAJLDocumentStackCapacity;
  @param capacity Initial capacity for NSArray and NSDictionary objects (Defaults to 20)
  @param error Error to set on failure
  */
-- (id)initWithData:(NSData *)data parserOptions:(YAJLParserOptions)parserOptions capacity:(NSInteger)capacity error:(NSError **)error;
+- (id)initWithData:(NSData *)data parserOptions:(YAJLParserOptions)parserOptions capacity:(NSUInteger)capacity error:(NSError **)error;
 
 /*!
  Create empty document with parser options.
@@ -179,18 +179,29 @@ extern NSInteger YAJLDocumentStackCapacity;
  - YAJLParserOptionsStrictPrecision: If YES will force strict precision and return integer overflow error
  @param capacity Initial capacity for NSArray and NSDictionary objects (Defaults to 20)
  */
-- (id)initWithParserOptions:(YAJLParserOptions)parserOptions capacity:(NSInteger)capacity;
+- (id)initWithParserOptions:(YAJLParserOptions)parserOptions capacity:(NSUInteger)capacity;
 
 /*!
- Parse data.
+ Parse data in one chunk.
  @param data Data to parse
  @param error Out error to set on failure
  @result Parser status
   - YAJLParserStatusNone: No status
   - YAJLParserStatusOK: Parsed OK 
-  - YAJLParserStatusInsufficientData: There was insufficient data
   - YAJLParserStatusError: Parser errored
  */
 - (YAJLParserStatus)parse:(NSData *)data error:(NSError **)error;
+
+/*!
+ Parse data in multiple chunks.
+ @param data Data to parse
+ @param complete Data is last chunk
+ @param error Out error to set on failure
+ @result Parser status
+ - YAJLParserStatusNone: No status
+ - YAJLParserStatusOK: Parsed OK 
+ - YAJLParserStatusError: Parser errored
+ */
+- (YAJLParserStatus)parse:(NSData *)data complete:(BOOL)complete error:(NSError **)error;
 
 @end

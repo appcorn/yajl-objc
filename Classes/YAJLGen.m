@@ -41,11 +41,10 @@ NSString *const YAJLGenInvalidObjectException = @"YAJLGenInvalidObjectException"
 - (id)initWithGenOptions:(YAJLGenOptions)genOptions indentString:(NSString *)indentString {
   if ((self = [super init])) {
     genOptions_ = genOptions;
-    yajl_gen_config cfg = { 
-      ((genOptions & YAJLGenOptionsBeautify) ? 1 : 0),
-      [indentString UTF8String]
-    };    
-    gen_ = yajl_gen_alloc(&cfg, NULL);    
+    gen_ = yajl_gen_alloc(NULL);
+    (void) yajl_gen_config(gen_, yajl_gen_beautify, (genOptions & YAJLGenOptionsBeautify));
+    if (indentString != nil)
+      (void) yajl_gen_config(gen_, yajl_gen_indent_string, [indentString UTF8String]);
   }
   return self;
 }
@@ -86,7 +85,7 @@ NSString *const YAJLGenInvalidObjectException = @"YAJLGenInvalidObjectException"
     if (genOptions_ & YAJLGenOptionsIncludeUnsupportedTypes) {
       // Begin with support for non-JSON representable (PList) types
       if ([obj isKindOfClass:[NSDate class]]) { 
-        [self number:[NSNumber numberWithLongLong:round([obj timeIntervalSince1970] * 1000)]];
+        [self number:[NSNumber numberWithLongLong:llround([obj timeIntervalSince1970] * 1000)]];
       } else if ([obj isKindOfClass:[NSData class]]) {
         [self string:[YAJL_GTMBase64 stringByEncodingData:obj]];
       } else if ([obj isKindOfClass:[NSURL class]]) {
@@ -119,13 +118,13 @@ NSString *const YAJLGenInvalidObjectException = @"YAJLGenInvalidObjectException"
 
 - (void)number:(NSNumber *)number {
   NSString *s = [number stringValue];
-  unsigned int length = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  size_t length = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
   const char *c = [s UTF8String];
   yajl_gen_number(gen_, c, length);
 }
 
 - (void)string:(NSString *)s {
-  unsigned int length = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  size_t length = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
   const unsigned char *c = (const unsigned char *)[s UTF8String]; 
   yajl_gen_string(gen_, c, length);
 }
@@ -152,7 +151,7 @@ NSString *const YAJLGenInvalidObjectException = @"YAJLGenInvalidObjectException"
 
 - (NSString *)buffer {
   const unsigned char *buf;  
-  unsigned int len;
+  size_t len;
   yajl_gen_get_buf(gen_, &buf, &len); 
   NSString *s = [NSString stringWithUTF8String:(const char*)buf]; 
   return s;
