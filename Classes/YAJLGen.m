@@ -43,6 +43,7 @@ NSString *const YAJLGenInvalidObjectException = @"YAJLGenInvalidObjectException"
     genOptions_ = genOptions;
     gen_ = yajl_gen_alloc(NULL);
     (void) yajl_gen_config(gen_, yajl_gen_beautify, (genOptions & YAJLGenOptionsBeautify));
+    (void) yajl_gen_config(gen_, yajl_gen_escape_solidus, (genOptions & YAJLGenOptionsEscapeSolidus));
     if (indentString != nil)
       (void) yajl_gen_config(gen_, yajl_gen_indent_string, [indentString UTF8String]);
   }

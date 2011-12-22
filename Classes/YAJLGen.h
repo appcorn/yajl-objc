@@ -38,6 +38,7 @@ enum YAJLGenOptions {
   YAJLGenOptionsBeautify = 1 << 0, //!< Beautifiy JSON output
   YAJLGenOptionsIgnoreUnknownTypes = 1 << 1, //!< Ignore unknown types (will use null value)
   YAJLGenOptionsIncludeUnsupportedTypes = 1 << 2, //!< Handle non-JSON types (including NSDate, NSData, NSURL)
+  YAJLGenOptionsEscapeSolidus = 1 << 3, //!< Escape solidus ("/" character)
 };
 typedef NSUInteger YAJLGenOptions;
 
