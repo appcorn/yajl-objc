@@ -67,5 +67,5 @@ lipo \
 # header files and the plist file
 echo "Framework: Copying assets into current version..."
 cp -v ../Classes/*.h $FRAMEWORK_DIR/Headers/
-cp -v ../yajl-1.0.11/api/*.h $FRAMEWORK_DIR/Headers/
+cp -v ../yajl/api/*.h $FRAMEWORK_DIR/Headers/
 cp -v Framework.plist $FRAMEWORK_DIR/Resources/Info.plist
